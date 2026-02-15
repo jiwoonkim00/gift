@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>사랑 재판소: 깅지운 vs 세롱</title>
+  <style>
+    :root{
+      --bg:#0b0f1a;
+      --card:#121a2b;
+      --text:#e8eefc;
+      --muted:#9bb0d6;
+      --accent:#7c5cff;
+      --good:#5dffb1;
+      --bad:#ff5d7a;
+      --line:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",sans-serif;
+      background:
+        radial-gradient(900px 600px at 30% 10%, rgba(124,92,255,.28), transparent),
+        radial-gradient(900px 600px at 80% 40%, rgba(93,255,177,.12), transparent),
+        var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:980px; margin:0 auto; padding:24px 16px 80px}
+    .top{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      padding:14px 16px; border:1px solid var(--line); border-radius:16px;
+      background:rgba(18,26,43,.55); backdrop-filter: blur(10px);
+      position:sticky; top:10px; z-index:5;
+    }
+    .badge{display:flex; gap:8px; align-items:center; color:var(--muted); font-size:13px}
+    .dot{width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 20px rgba(124,92,255,.8)}
+    .progress{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; font-size:12px; color:var(--muted)}
+    .chip{padding:6px 10px; border:1px solid var(--line); border-radius:999px; background:rgba(15,23,38,.65)}
+    h1{font-size:28px; margin:26px 0 6px}
+    p.lead{margin:0 0 18px; color:var(--muted)}
+    .card{
+      border:1px solid var(--line); border-radius:20px; background:rgba(18,26,43,.6);
+      backdrop-filter: blur(8px); padding:18px;
+    }
+    .grid{display:grid; gap:14px}
+    @media(min-width:820px){ .grid.two{grid-template-columns:1.1fr .9fr} }
+    .title{display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .title h2{margin:0; font-size:18px}
+    .small{font-size:13px; color:var(--muted); line-height:1.55}
+    .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+    button{
+      border:1px solid var(--line); background:rgba(15,23,38,.75); color:var(--text);
+      padding:10px 12px; border-radius:14px; cursor:pointer;
+      transition:.15s transform ease, .15s border-color ease;
+      font-weight:750;
+    }
+    button:hover{transform: translateY(-1px); border-color:rgba(124,92,255,.45)}
+    button.primary{background:linear-gradient(135deg, rgba(124,92,255,.9), rgba(124,92,255,.55)); border-color:transparent}
+    button.good{background:linear-gradient(135deg, rgba(93,255,177,.9), rgba(93,255,177,.35)); border-color:transparent; color:#062015}
+    button.bad{background:linear-gradient(135deg, rgba(255,93,122,.9), rgba(255,93,122,.35)); border-color:transparent}
+    .lock{opacity:.45}
+    .sep{height:1px; background:var(--line); margin:16px 0}
+    .hidden{display:none !important}
+
+    /* Museum */
+    .museum{display:grid; gap:12px; grid-template-columns:repeat(2, 1fr)}
+    @media(min-width:620px){ .museum{grid-template-columns:repeat(3, 1fr)} }
+    .item{
+      padding:14px; border-radius:18px; border:1px solid var(--line);
+      background:rgba(15,23,38,.7);
+      cursor:pointer; transition:.15s transform ease, .15s border-color ease;
+      min-height:96px; display:flex; flex-direction:column; justify-content:space-between;
+    }
+    .item:hover{transform: translateY(-1px); border-color:rgba(124,92,255,.45)}
+    .tag{font-size:12px; color:var(--muted)}
+    .seen{border-color:rgba(93,255,177,.45); box-shadow: inset 0 0 0 1px rgba(93,255,177,.2)}
+
+    /* Modal */
+    .modal{
+      position:fixed; inset:0; background:rgba(0,0,0,.62);
+      display:none; align-items:center; justify-content:center; padding:16px; z-index:10;
+    }
+    .modal.open{display:flex}
+    .modalBox{
+      width:min(720px, 100%); border-radius:22px; border:1px solid var(--line);
+      background:rgba(18,26,43,.92); backdrop-filter: blur(10px);
+      padding:18px;
+    }
+    .modalHead{display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .close{background:transparent; border:1px solid var(--line); border-radius:12px; padding:8px 10px}
+    .quote{
+      margin:12px 0 0; padding:12px 14px; border-radius:16px;
+      background:rgba(124,92,255,.12); border:1px solid rgba(124,92,255,.22);
+      line-height:1.65;
+    }
+
+    /* Gauge */
+    .barWrap{margin-top:10px}
+    .bar{
+      height:14px; border-radius:999px; background:rgba(255,255,255,.08);
+      overflow:hidden; border:1px solid var(--line);
+    }
+    .bar > div{
+      height:100%; width:0%;
+      background:linear-gradient(90deg, rgba(255,93,122,.9), rgba(124,92,255,.9), rgba(93,255,177,.9));
+      transition: .25s width ease;
+    }
+    .gInfo{display:flex; justify-content:space-between; gap:10px; margin-top:8px; color:var(--muted); font-size:12px}
+    .toast{margin-top:10px; font-size:13px; color:var(--muted)}
+    .shake{animation: shake .28s linear}
+    @keyframes shake{
+      0%{transform:translateX(0)} 25%{transform:translateX(-6px)}
+      50%{transform:translateX(6px)} 75%{transform:translateX(-4px)}
+      100%{transform:translateX(0)}
+    }
+
+    /* Safe */
+    input{
+      width:100%; padding:12px 12px; border-radius:14px;
+      border:1px solid var(--line); background:rgba(15,23,38,.75); color:var(--text);
+      font-size:15px;
+    }
+    .result{
+      margin-top:12px; padding:14px; border-radius:16px;
+      border:1px dashed rgba(93,255,177,.45);
+      background:rgba(93,255,177,.08);
+    }
+    .footer{margin-top:26px; color:var(--muted); font-size:12px; text-align:center}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="badge"><span class="dot"></span> 사랑 재판소 · 사건번호 <b>#SE-RONG-0506</b></div>
+      <div class="progress">
+        <span class="chip" id="stepChip">STEP 1/4</span>
+        <span class="chip" id="unlockChip">해금: 0/3</span>
+        <span class="chip">만난 날: <b>2025-05-06</b></span>
+      </div>
+    </div>
+
+    <h1>👩‍⚖️ 사랑 재판소</h1>
+    <p class="lead">재판(선택) → 증거 박물관(관람) → 기분 게이지(미션) → 금고(코드 0506)</p>
+
+    <!-- STEP 1 -->
+    <section class="card" id="step1">
+      <div class="title">
+        <h2>STEP 1) 재판 시작: 피고는… <span class="mono">깅지운</span></h2>
+        <div class="small" id="courtStatus">혐의: “세롱을 너무 좋아해서 티가 난다”</div>
+      </div>
+      <div class="sep"></div>
+
+      <div class="grid two">
+        <div>
+          <div class="small">
+            존경하는 재판장님(=세롱)…<br/>
+            피고(깅지운)는 <b>사랑 과다</b> 혐의로 기소되었습니다.<br/>
+            아래 중 하나를 선택해 변론하세요. (※ 어떤 선택을 해도… 결과는 귀엽게 끝남)
+          </div>
+          <div class="btns">
+            <button id="btnExcuse">변명한다 🤓</button>
+            <button id="btnAdmit">인정한다 🙋‍♂️</button>
+            <button id="btnAegyo" class="primary">애교 부린다 🥺</button>
+          </div>
+        </div>
+        <div class="card" style="background:rgba(15,23,38,.55)">
+          <div class="small" style="margin-bottom:8px"><b>판결문(실시간)</b></div>
+          <div id="verdict" style="line-height:1.7">
+            “피고는 아직 변론을 시작하지 않았습니다.”<br/>
+            ※ 재판장님 클릭 한 번이면 평생형도 가능합니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="btns" style="justify-content:flex-end">
+        <button id="toMuseum" class="good">증거 박물관으로 이동 ➜</button>
+      </div>
+    </section>
+
+    <div style="height:14px"></div>
+
+    <!-- STEP 2 -->
+    <section class="card hidden" id="step2">
+      <div class="title">
+        <h2>STEP 2) 증거 박물관: “깅지운이 세롱을 좋아한 흔적들”</h2>
+        <div class="small">전시품 <b>3개 이상</b> 관람하면 다음 단계가 해금돼요.</div>
+      </div>
+      <div class="sep"></div>
+
+      <div class="museum" id="museumGrid"></div>
+
+      <div class="sep"></div>
+      <div class="small">관람 진행도: <b id="seenCount">0</b> / 6</div>
+      <div class="btns" style="justify-content:flex-end">
+        <button id="toGauge" class="good lock">기분 게이지 게임(잠김)</button>
+      </div>
+    </section>
+
+    <div style="height:14px"></div>
+
+    <!-- STEP 3 -->
+    <section class="card hidden" id="step3">
+      <div class="title">
+        <h2>STEP 3) 기분 게이지: “세롱 행복도 100% 만들기”</h2>
+        <div class="small" id="hintBox">힌트: 행동을 잘 고르면 게이지가 올라가요.</div>
+      </div>
+      <div class="sep"></div>
+
+      <div class="barWrap">
+        <div class="bar"><div id="barFill"></div></div>
+        <div class="gInfo">
+          <span>현재: <b id="gVal">0%</b></span>
+          <span>목표: <b>100%</b></span>
+        </div>
+        <div class="toast" id="toast">미션을 선택해봐!</div>
+      </div>
+
+      <div class="btns" style="margin-top:14px">
+        <button class="good" data-delta="18">“오늘 예쁘다” 3연타 💬 (+18)</button>
+        <button class="good" data-delta="22">간식/커피 서포트 ☕ (+22)</button>
+        <button class="good" data-delta="26">선제 사과 🙇‍♂️ (+26)</button>
+        <button class="bad" data-delta="-15">금지어: “그렇고만” 😇 (-15)</button>
+        <button class="bad" data-delta="-20">답장 늦게 보기(고의) 🐢 (-20)</button>
+      </div>
+
+      <div class="sep"></div>
+      <div class="small" id="safeHint" style="display:none">
+        ✅ 금고 힌트가 해금되었습니다!<br/>
+        비밀코드 규칙: <b>만난 날에서 나온 4자리</b>를 입력하면 열립니다.<br/>
+        힌트: <b>2025년 5월 6일</b> → (숫자 4자리)
+      </div>
+
+      <div class="btns" style="justify-content:flex-end">
+        <button id="toSafe" class="good lock">금고로 이동(잠김)</button>
+      </div>
+    </section>
+
+    <div style="height:14px"></div>
+
+    <!-- STEP 4 -->
+    <section class="card hidden" id="step4">
+      <div class="title">
+        <h2>STEP 4) 비밀 금고: “열리면 엔딩 공개”</h2>
+        <div class="small">코드 3번 틀리면… 애교 인증으로 넘어갑니다(농담)</div>
+      </div>
+      <div class="sep"></div>
+
+      <div class="grid two">
+        <div>
+          <div class="small">비밀코드를 입력해줘. (정답은 <b>0506</b>)</div>
+          <input id="codeInput" placeholder="예: 0506" inputmode="numeric" />
+          <div class="btns">
+            <button id="tryCode" class="primary">금고 열기 🔐</button>
+            <button id="giveHint">힌트 보기 💡</button>
+          </div>
+          <div class="small" id="tries" style="margin-top:8px">시도: 0 / 3</div>
+        </div>
+        <div class="card" style="background:rgba(15,23,38,.55)">
+          <div class="small"><b>금고 상태</b></div>
+          <div id="safeStatus" style="margin-top:8px; line-height:1.7; color:var(--muted)">
+            “잠금 상태입니다. 올바른 코드가 입력되면…”
+          </div>
+        </div>
+      </div>
+
+      <div id="finalBox" class="result hidden">
+        <div style="font-weight:900; font-size:16px">🎉 금고가 열렸습니다!</div>
+        <div style="margin-top:8px; line-height:1.7">
+          <b>To. 세롱</b><br/>
+          깅지운은 세롱을 좋아합니다. (증거: 이 페이지 전체)<br/>
+          앞으로도 계속 더 잘할게.<br/><br/>
+
+          ✅ <b>선물</b>: <span class="mono">[여기에 나중에 사진/파일/링크 넣기]</span>
+        </div>
+      </div>
+
+      <div class="footer">
+        수정 포인트: <span class="mono">SAFE_CODE</span>, <span class="mono">EXHIBITS</span>, 엔딩의 선물 영역만 바꾸면 완성!
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modalBox">
+      <div class="modalHead">
+        <div>
+          <div style="font-weight:900" id="mTitle">전시품</div>
+          <div class="tag" id="mTag">태그</div>
+        </div>
+        <button class="close" id="mClose">닫기 ✕</button>
+      </div>
+      <div class="quote" id="mBody"></div>
+    </div>
+  </div>
+
+  <script>
+    // =======================
+    // ✅ 여기만 바꾸면 됨
+    // =======================
+    const SAFE_CODE = "0506"; // 금고 정답
+
+    // 전시품(예시) — 나중에 네가 title/body만 바꾸면 끝
+    const EXHIBITS = [
+      { id:1, title:"전시품 #1: 첫 만남(예시)", tag:"#2025_0506 #시작", body:"여기에 너희 첫 만남 스토리 한 줄 적기" },
+      { id:2, title:"전시품 #2: 웃겼던 사건(예시)", tag:"#밈 #웃음", body:"여기에 둘만 아는 웃긴 사건 적기" },
+      { id:3, title:"전시품 #3: 설렜던 순간(예시)", tag:"#심장과부하", body:"여기에 설렜던 순간 적기" },
+      { id:4, title:"전시품 #4: 고의로 티냄(예시)", tag:"#부인불가", body:"여기에 '깅지운이 티냈던' 내용 적기" },
+      { id:5, title:"전시품 #5: 금지어 경고(예시)", tag:"#그렇고만_금지", body:"‘그렇고만’ 나오면 감점… 같은 문구 넣기" },
+      { id:6, title:"전시품 #6: 다음 편 예고(예시)", tag:"#ToBeContinued", body:"여기에 앞으로 하고 싶은 것/여행/데이트 적기" },
+    ];
+
+    // ====== Elements ======
+    const stepChip = document.getElementById("stepChip");
+    const unlockChip = document.getElementById("unlockChip");
+
+    const step2 = document.getElementById("step2");
+    const step3 = document.getElementById("step3");
+    const step4 = document.getElementById("step4");
+
+    const verdict = document.getElementById("verdict");
+    const courtStatus = document.getElementById("courtStatus");
+
+    const toMuseum = document.getElementById("toMuseum");
+    const toGauge = document.getElementById("toGauge");
+    const toSafe = document.getElementById("toSafe");
+
+    const museumGrid = document.getElementById("museumGrid");
+    const seenCountEl = document.getElementById("seenCount");
+
+    const modal = document.getElementById("modal");
+    const mTitle = document.getElementById("mTitle");
+    const mTag = document.getElementById("mTag");
+    const mBody = document.getElementById("mBody");
+
+    const barFill = document.getElementById("barFill");
+    const gVal = document.getElementById("gVal");
+    const toast = document.getElementById("toast");
+    const safeHint = document.getElementById("safeHint");
+
+    const codeInput = document.getElementById("codeInput");
+    const tryCode = document.getElementById("tryCode");
+    const giveHint = document.getElementById("giveHint");
+    const triesEl = document.getElementById("tries");
+    const safeStatus = document.getElementById("safeStatus");
+    const finalBox = document.getElementById("finalBox");
+
+    // ====== State ======
+    let unlocked = 0;          // 해금 0~3
+    let seen = new Set();      // 관람한 전시품 id
+    let gauge = 0;             // 0~100
+    let tries = 0;             // 금고 시도
+
+    function setStep(n){
+      stepChip.textContent = `STEP ${n}/4`;
+      const el = [null, document.getElementById("step1"), step2, step3, step4][n];
+      el?.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+    function setUnlock(){
+      unlockChip.textContent = `해금: ${unlocked}/3`;
+    }
+
+    // ====== STEP 1: Court ======
+    document.getElementById("btnExcuse").addEventListener("click", ()=>{
+      verdict.innerHTML =
+        "🧾 <b>변론</b>: “저는 원래 이런 사람이 아니었는데… 세롱 때문에 이렇게 됐습니다.”<br/>" +
+        "👩‍⚖️ <b>판결</b>: 유죄(사랑) + 감형 불가(귀여움).";
+      courtStatus.textContent = "혐의 추가: “세롱 앞에서만 말투가 달라짐(상습)”";
+    });
+    document.getElementById("btnAdmit").addEventListener("click", ()=>{
+      verdict.innerHTML =
+        "🧾 <b>자백</b>: “네. 깅지운은 세롱을 좋아합니다. 증거는… 넘칩니다.”<br/>" +
+        "👩‍⚖️ <b>판결</b>: 유죄(사랑) + 평생형(동의 필요).";
+      courtStatus.textContent = "피고 태도 양호: “앞으로도 더 잘하겠습니다”";
+    });
+    document.getElementById("btnAegyo").addEventListener("click", ()=>{
+      verdict.innerHTML =
+        "🧾 <b>애교</b>: “재판장님(세롱)… 저… 보고싶었어요🥺”<br/>" +
+        "👩‍⚖️ <b>판결</b>: 즉결심판 → <b>포옹 10회</b>로 종결.";
+      courtStatus.textContent = "재판장 흔들림 감지: “웃음 참기 실패”";
+    });
+
+    toMuseum.addEventListener("click", ()=>{
+      step2.classList.remove("hidden");
+      setStep(2);
+      unlocked = Math.max(unlocked, 1);
+      setUnlock();
+    });
+
+    // ====== STEP 2: Museum ======
+    function renderMuseum(){
+      museumGrid.innerHTML = "";
+      EXHIBITS.forEach(ex=>{
+        const div = document.createElement("div");
+        div.className = "item" + (seen.has(ex.id) ? " seen" : "");
+        div.innerHTML = `
+          <div style="font-weight:900">${ex.title}</div>
+          <div class="tag">${ex.tag}</div>
+        `;
+        div.addEventListener("click", ()=>{
+          mTitle.textContent = ex.title;
+          mTag.textContent = ex.tag;
+          mBody.textContent = ex.body;
+          modal.classList.add("open");
+
+          if(!seen.has(ex.id)){
+            seen.add(ex.id);
+            div.classList.add("seen");
+            seenCountEl.textContent = String(seen.size);
+
+            if(seen.size >= 3){
+              toGauge.classList.remove("lock");
+              toGauge.textContent = "기분 게이지 게임으로 이동 ➜";
+            }
+          }
+        });
+        museumGrid.appendChild(div);
+      });
+      seenCountEl.textContent = String(seen.size);
+    }
+    renderMuseum();
+
+    document.getElementById("mClose").addEventListener("click", ()=> modal.classList.remove("open"));
+    modal.addEventListener("click", (e)=>{ if(e.target === modal) modal.classList.remove("open"); });
+
+    toGauge.addEventListener("click", ()=>{
+      if(seen.size < 3) return;
+      step3.classList.remove("hidden");
+      setStep(3);
+      unlocked = Math.max(unlocked, 2);
+      setUnlock();
+    });
+
+    // ====== STEP 3: Gauge ======
+    function setGauge(val, msg){
+      gauge = Math.max(0, Math.min(100, val));
+      barFill.style.width = gauge + "%";
+      gVal.textContent = gauge + "%";
+      toast.textContent = msg ?? "좋아!";
+
+      if(gauge >= 100){
+        safeHint.style.display = "block";
+        toSafe.classList.remove("lock");
+        toSafe.textContent = "금고로 이동 ➜";
+      }
+    }
+
+    document.querySelectorAll("[data-delta]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const delta = Number(btn.getAttribute("data-delta"));
+        const after = gauge + delta;
+        const msg = delta > 0
+          ? `행복도 +${delta}! (세롱 기분 상승 중)`
+          : `경고 ${delta}! (깅지운 눈치 패치 필요)`;
+        setGauge(after, msg);
+
+        if(delta < 0){
+          const s = document.getElementById("step3");
+          s.classList.remove("shake"); void s.offsetWidth; s.classList.add("shake");
+        }
+      });
+    });
+
+    toSafe.addEventListener("click", ()=>{
+      if(gauge < 100) return;
+      step4.classList.remove("hidden");
+      setStep(4);
+      unlocked = 3;
+      setUnlock();
+    });
+
+    // ====== STEP 4: Safe ======
+    function normalize(str){ return (str ?? "").trim().replace(/\s+/g,""); }
+
+    tryCode.addEventListener("click", ()=>{
+      const input = normalize(codeInput.value);
+      const answer = normalize(SAFE_CODE);
+
+      tries += 1;
+      triesEl.textContent = `시도: ${tries} / 3`;
+
+      if(input && input === answer){
+        safeStatus.innerHTML = "✅ <b>잠금 해제!</b> 사랑 인증 완료. 엔딩을 확인하세요.";
+        finalBox.classList.remove("hidden");
+        finalBox.scrollIntoView({behavior:"smooth", block:"start"});
+        return;
+      }
+
+      if(tries >= 3){
+        safeStatus.innerHTML =
+          "🔔 <b>보안 모드</b>: 코드 3회 실패…<br/>" +
+          "대신 <b>애교 인증</b>으로 통과 가능합니다. (세롱에게 “사랑해” 말하면 자동 통과)";
+      } else {
+        safeStatus.innerHTML = `❌ 틀렸습니다. (깅지운은 더 열심히 하겠습니다)<br/>남은 기회: <b>${3-tries}</b>`;
+      }
+    });
+
+    giveHint.addEventListener("click", ()=>{
+      safeStatus.innerHTML =
+        "💡 힌트: 만난 날에서 나온 4자리입니다.<br/>" +
+        "<b>2025-05-06</b> → (MMDD)";
+      codeInput.focus();
+    });
+
+    // init
+    setStep(1);
+    setUnlock();
+  </script>
+</body>
+</html>
