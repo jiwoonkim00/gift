@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>사랑 재판소: 깅지운 vs 세롱</title>
+  <title>사랑 재판소: 깅지운 vs 세롱이</title>
   <style>
     :root{
       --bg:#0b0f1a;
@@ -141,13 +141,13 @@
     </div>
 
     <h1>👩‍⚖️ 사랑 재판소</h1>
-    <p class="lead">재판(선택) → 증거 박물관(관람) → 기분 게이지(미션) → 금고(코드 0506)</p>
+    <p class="lead">재판 → 증거 박물관 → 기분 게이지(미션) → 금고</p>
 
     <!-- STEP 1 -->
     <section class="card" id="step1">
       <div class="title">
         <h2>STEP 1) 재판 시작: 피고는… <span class="mono">깅지운</span></h2>
-        <div class="small" id="courtStatus">혐의: “세롱을 너무 좋아해서 티가 난다”</div>
+        <div class="small" id="courtStatus">혐의: “세롱을 너무 좋아해서 일상생활에 지장이 있다”</div>
       </div>
       <div class="sep"></div>
 
@@ -156,7 +156,7 @@
           <div class="small">
             존경하는 재판장님(=세롱)…<br/>
             피고(깅지운)는 <b>사랑 과다</b> 혐의로 기소되었습니다.<br/>
-            아래 중 하나를 선택해 변론하세요. (※ 어떤 선택을 해도… 결과는 귀엽게 끝남)
+            아래 중 하나를 선택해 변론하세요. 
           </div>
           <div class="btns">
             <button id="btnExcuse">변명한다 🤓</button>
@@ -165,7 +165,7 @@
           </div>
         </div>
         <div class="card" style="background:rgba(15,23,38,.55)">
-          <div class="small" style="margin-bottom:8px"><b>판결문(실시간)</b></div>
+          <div class="small" style="margin-bottom:8px"><b>판결문</b></div>
           <div id="verdict" style="line-height:1.7">
             “피고는 아직 변론을 시작하지 않았습니다.”<br/>
             ※ 재판장님 클릭 한 번이면 평생형도 가능합니다.
@@ -217,11 +217,11 @@
       </div>
 
       <div class="btns" style="margin-top:14px">
-        <button class="good" data-delta="18">“오늘 예쁘다” 3연타 💬 (+18)</button>
-        <button class="good" data-delta="22">간식/커피 서포트 ☕ (+22)</button>
-        <button class="good" data-delta="26">선제 사과 🙇‍♂️ (+26)</button>
+        <button class="good" data-delta="18">“예쁘구 사랑한다” 3연타 💬 (+18)</button>
+        <button class="good" data-delta="22">맛있는거 먹이기 ☕ (+22)</button>
+        <button class="good" data-delta="26">먼저 사과하기 🙇‍♂️ (+26)</button>
         <button class="bad" data-delta="-15">금지어: “그렇고만” 😇 (-15)</button>
-        <button class="bad" data-delta="-20">답장 늦게 보기(고의) 🐢 (-20)</button>
+        <button class="bad" data-delta="-20">읽씹하기(고의) 🐢 (-20)</button>
       </div>
 
       <div class="sep"></div>
@@ -248,8 +248,8 @@
 
       <div class="grid two">
         <div>
-          <div class="small">비밀코드를 입력해줘. (정답은 <b>0506</b>)</div>
-          <input id="codeInput" placeholder="예: 0506" inputmode="numeric" />
+          <div class="small">비밀코드를 입력해줘. </div>
+          <input id="codeInput" placeholder="예: 우리가 사귀 날짜" inputmode="numeric" />
           <div class="btns">
             <button id="tryCode" class="primary">금고 열기 🔐</button>
             <button id="giveHint">힌트 보기 💡</button>
@@ -269,7 +269,7 @@
         <div style="margin-top:8px; line-height:1.7">
           <b>To. 세롱</b><br/>
           깅지운은 세롱을 좋아합니다. (증거: 이 페이지 전체)<br/>
-          앞으로도 계속 더 잘할게.<br/><br/>
+          앞으로도 우리 더 행복하게 지내장 사랑해.<br/><br/>
 
           ✅ <b>선물</b>:
           <img src="gift.jpg" alt="선물" style="max-width:100%; border-radius:14px; margin-top:10px;">
@@ -305,12 +305,12 @@
 
     // 전시품(예시) — 나중에 네가 title/body만 바꾸면 끝
     const EXHIBITS = [
-      { id:1, title:"전시품 #1: 첫 만남", tag:"#2025_0506 #시작", body:"여기에 너희 첫 만남 스토리 한 줄 적기" },
-      { id:2, title:"전시품 #2: 웃겼던 사건(예시)", tag:"#밈 #웃음", body:"여기에 둘만 아는 웃긴 사건 적기" },
-      { id:3, title:"전시품 #3: 설렜던 순간(예시)", tag:"#심장과부하", body:"여기에 설렜던 순간 적기" },
-      { id:4, title:"전시품 #4: 고의로 티냄(예시)", tag:"#부인불가", body:"여기에 '깅지운이 티냈던' 내용 적기" },
-      { id:5, title:"전시품 #5: 금지어 경고(예시)", tag:"#그렇고만_금지", body:"‘그렇고만’ 나오면 감점… 같은 문구 넣기" },
-      { id:6, title:"전시품 #6: 다음 편 예고(예시)", tag:"#ToBeContinued", body:"여기에 앞으로 하고 싶은 것/여행/데이트 적기" },
+      { id:1, title:"전시품 #1: 귀여워 죽을 뻔한 날", tag:"#2025_0316 #술찌", img:"alcol.jpg", body:"애기가 완전 취해서 정신 잃은 " },
+      { id:2, title:"전시품 #2: 사랑스러워서 죽을 뻔한 날", tag:"#졸귀 #개이쁨", img:"love.jpg", body:"저 때 심장 부여잡고 쓰러질뻔한거 간신히 참음" },
+      { id:3, title:"전시품 #3: 신세경이랑 카페 간날", tag:"#심장과부하", img:"cafe.jpg", body:"녹차가 코로 들어가는지 입으로 들어가는 지도 모르고 마심" },
+      { id:4, title:"전시품 #4: 세롱이한테만 귀여움", tag:"#부인불가", img:"cute.jpg", body:"세롱이한테만 귀여움" },
+      { id:5, title:"전시품 #5: 자기 먹을거 뺏길까봐 경계하는 모습도 귀여움", img:"food.jpg", tag:"#그렇고만_금지", body:"‘그렇고만’ 나오면 감점… 같은 문구 넣기" },
+      { id:6, title:"전시품 #6: 우리가 꼭 해야할거", tag:"#코끼리", img:"el.jpg", body:"코끼리 보러가깅 ㅎㅎ " },
     ];
 
     // ====== Elements ======
@@ -366,7 +366,7 @@
     // ====== STEP 1: Court ======
     document.getElementById("btnExcuse").addEventListener("click", ()=>{
       verdict.innerHTML =
-        "🧾 <b>변론</b>: “저는 원래 이런 사람이 아니었는데… 세롱 때문에 이렇게 됐습니다.”<br/>" +
+        "🧾 <b>변론</b>: “저는 원래 이런 사람이 아니었는데… 세롱이 때문에 이렇게 됐습니다.”<br/>" +
         "👩‍⚖️ <b>판결</b>: 유죄(사랑) + 감형 불가(귀여움).";
       courtStatus.textContent = "혐의 추가: “세롱 앞에서만 말투가 달라짐(상습)”";
     });
@@ -379,7 +379,7 @@
     document.getElementById("btnAegyo").addEventListener("click", ()=>{
       verdict.innerHTML =
         "🧾 <b>애교</b>: “재판장님(세롱)… 저… 보고싶었어요🥺”<br/>" +
-        "👩‍⚖️ <b>판결</b>: 즉결심판 → <b>포옹 10회</b>로 종결.";
+        "👩‍⚖️ <b>판결</b>: 즉결심판 → <b>뽀뽀 100회</b>로 종결.";
       courtStatus.textContent = "재판장 흔들림 감지: “웃음 참기 실패”";
     });
 
